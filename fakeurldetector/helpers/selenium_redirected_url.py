@@ -6,7 +6,11 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import WebDriverException
-from ssl import SSLCertVerificationError
+import platform
+
+
+def get_chrome_bin_loc():
+    return os.path.join(os.getcwd(), "binaries", "chrome", "chrome")
 
 
 def get_chrome_options():
@@ -17,7 +21,8 @@ def get_chrome_options():
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.accept_insecure_certs = True
-    chrome_options.binary_location = os.path.join(os.getcwd(), "binaries", "chrome", "chrome")
+    if platform.system().lower() == "linux":
+        chrome_options.binary_location = get_chrome_bin_loc()
     return chrome_options
 
 
@@ -36,6 +41,3 @@ def get_redirected_url(url: str) -> (bool, str):
         return False, e.msg
     finally:
         driver.quit()
-
-
-

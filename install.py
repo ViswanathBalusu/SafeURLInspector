@@ -78,10 +78,14 @@ def download_binaries(version):
         # Rename the directory
         os.rename(c_dest_ext, c_dest_final)
     print("setting permissions")
-    perm_files = glob.glob(os.path.join(c_dest_final, "*"))
+    if sys == "linux":
+        perm_files = glob.glob(os.path.join(c_dest_final, "*"))
 
-    for file in perm_files:
-        os.chmod(file, 0o755)
+        for file in perm_files:
+            os.chmod(file, 0o755)
+    elif sys == "darwin":
+        os.chmod(os.path.join(os.getcwd(), "binaries", "chrome", "Google Chrome for Testing.app",
+                              "Contents", "MacOS", "Google Chrome for Testing"), 0o755)
 
 
 if __name__ == "__main__":
