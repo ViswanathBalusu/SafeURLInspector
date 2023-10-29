@@ -1,17 +1,15 @@
 from uuid import UUID
 
-from fastapi import APIRouter
-from fastapi.responses import ORJSONResponse
-from sqlalchemy import select
+from fastapi import APIRouter, HTTPException
 from ..helpers.database import users
-from fakeurldetector import DATABASE, LOGGER
+from fakeurldetector import DATABASE, LOGGER, MODEL_DIR
 from fastapi.encoders import jsonable_encoder
 from ..helpers import get_ssl_certificate, get_redirected_url, extract_url_features
 from ..helpers.models import FakeDetectionResponse, FakeDetectionIn
 from telebot.async_telebot import AsyncTeleBot
 from urllib.parse import urlparse
 import pickle
-import os
+import re
 import pandas as pd
 
 FakeDetectionRouter = APIRouter(
@@ -27,7 +25,11 @@ FakeDetectionRouter = APIRouter(
 async def fake_detect(uuid_text: FakeDetectionIn):
     _session_q = users.select().where(users.c.uuid == str(uuid_text.uuid))
     _session = await DATABASE.fetch_one(_session_q)
-
+    url_pattern = r"https?://\S+|www\.\S+|ftp://\S+|\S+\.\S+/\S+"
+    uuid_text.text = re.findall(url_pattern, uuid_text.text)
+    if uuid_text.text is None:
+        raise HTTPException(status_code=404, detail={"Could not find URL in the text you sent"})
+    uuid_text.text = uuid_text.text[0]
     _dict = {}
     if _session[2] == "App":
         initial_text = f"""
@@ -38,6 +40,8 @@ async def fake_detect(uuid_text: FakeDetectionIn):
         _msg = await _bot.send_message(int(_session[4]), initial_text, parse_mode="HTML")
     _dict["original_url"] = str(uuid_text.text)
     check, _original_url = get_redirected_url(str(uuid_text.text))
+    if _original_url == "data:,":
+        _original_url = uuid_text.text
     if not check:
         LOGGER.info(f"Selenium Could not load the Site '{uuid_text.text}'")
         _original_url = uuid_text.text
@@ -72,13 +76,17 @@ async def fake_detect(uuid_text: FakeDetectionIn):
         "SSLPullError": err,
         "Certificate": cert
     }
+    if cert is not None:
+        _dict["ssl_cert"]["Certificate"]["notBefore"] = _dict["ssl_cert"]["Certificate"]["notBefore"].strftime('%m/%d/%Y')
+        _dict["ssl_cert"]["Certificate"]["notAfter"] = _dict["ssl_cert"]["Certificate"]["notAfter"].strftime('%m/%d/%Y')
+
     if _session[2] == "App":
         if check:
             middle_text += f"""
 <b>SSL Certificate is Valid</b>
 
-<b>Date of Issue : </b><code> {cert["notBefore"].strftime('%m/%d/%Y')}</code>
-<b>Date of Expiry : </b><code> {cert["notAfter"].strftime('%m/%d/%Y')}</code>
+<b>Date of Issue : </b><code> {cert["notBefore"]}</code>
+<b>Date of Expiry : </b><code> {cert["notAfter"]}</code>
 <b>Issuer : </b><code> {cert["issuer"]}</code>
 <b>Issued to : </b><code> {cert["subject"]}</code>
 """
@@ -90,8 +98,8 @@ async def fake_detect(uuid_text: FakeDetectionIn):
 <b>SSL Certificate is Invalid</b>
 
 <b>Error Message: </b><code>{err}</code>
-<b>Date of Issue : </b><code> {cert["notBefore"].strftime('%m/%d/%Y')}</code>
-<b>Date of Expiry : </b><code> {cert["notAfter"].strftime('%m/%d/%Y')}</code>
+<b>Date of Issue : </b><code> {cert["notBefore"]}</code>
+<b>Date of Expiry : </b><code> {cert["notAfter"]}</code>
 <b>Issuer : </b><code> {cert["issuer"]}</code>
 <b>Issued to : </b><code> {cert["subject"]}</code>                
 """
@@ -126,8 +134,10 @@ async def fake_detect(uuid_text: FakeDetectionIn):
         await _bot.edit_message_text(middle_text + ai_model_message, chat_id=int(_session[4]), message_id=_msg.id,
                                      parse_mode="HTML")
     _dict["features"] = _features
+    _dict["host_name"] = parsed_hostname
+    _dict["port"] = parsed_port
     X = pd.DataFrame(_features, index=[0]).iloc[:, :].values
-    with open(os.path.join(os.getcwd(), "fakeurldetector", "data", "model.pkl"), 'rb') as model:
+    with open(MODEL_DIR, 'rb') as model:
         _model = pickle.load(model)
     _pred = _model.predict(X)
 

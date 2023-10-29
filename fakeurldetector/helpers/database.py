@@ -1,5 +1,5 @@
 import sqlalchemy
-from fakeurldetector import Config
+from fakeurldetector import Config, LOGGER
 metadata = sqlalchemy.MetaData()
 
 
@@ -15,3 +15,5 @@ users = sqlalchemy.Table(
 
 engine = sqlalchemy.create_engine(Config.DB_URL, connect_args={"check_same_thread": False})
 metadata.create_all(engine)
+
+LOGGER.info("Created Tables and ORM Engine")

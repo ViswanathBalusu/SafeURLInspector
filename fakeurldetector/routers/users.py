@@ -4,7 +4,7 @@ from fastapi import APIRouter
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import ORJSONResponse
 
-from fakeurldetector import DATABASE
+from fakeurldetector import DATABASE, LOGGER
 from ..helpers.database import users
 from ..helpers.models import UserCreationIn, UserCreationResponse, UserGet, UsersGetAll
 

@@ -1,6 +1,7 @@
 import time
 
 from fastapi import FastAPI, Request, Security
+from fastapi.middleware.cors import CORSMiddleware
 
 from fakeurldetector import DATABASE, __version__
 
@@ -36,5 +37,13 @@ async def add_process_time_header(request: Request, call_next):
     response.headers["X-Process-Time"] = str(round(process_time * 1000, 3)) + " ms"
     return response
 
+
+FakeURLDetection.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 FakeURLDetection.include_router(UsersRouter)
 FakeURLDetection.include_router(FakeDetectionRouter)

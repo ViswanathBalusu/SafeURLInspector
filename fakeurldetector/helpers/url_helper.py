@@ -30,7 +30,6 @@ def get_domain_age(domain_name: str) -> int:
 
 
 def page_rank(url: str) -> int:
-
     o = urllib.parse.urlsplit(url)
     url_to_check = o[1]
 
@@ -79,10 +78,16 @@ def extract_url_features(url):
     features['nb_www'] = parsed_url.netloc.count('www')
 
     # Feature: Ratio of digits in the URL
-    features['ratio_digits_url'] = sum(c.isdigit() for c in url) / len(url)
+    try:
+        features['ratio_digits_url'] = sum(c.isdigit() for c in url) / len(url)
+    except Exception as e:
+        features['ratio_digits_url'] = 0
 
     # Feature: Ratio of digits in the hostname
-    features['ratio_digits_host'] = sum(c.isdigit() for c in parsed_url.netloc) / len(parsed_url.netloc)
+    try:
+        features['ratio_digits_host'] = sum(c.isdigit() for c in parsed_url.netloc) / len(parsed_url.netloc)
+    except Exception as e:
+        features['ratio_digits_host'] = 0
 
     # Feature: TLD (Top-Level Domain) in the subdomain
     extracted_domain = tldextract.extract(url)

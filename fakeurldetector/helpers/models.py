@@ -55,8 +55,8 @@ class URLFeatures(BaseModel):
     nb_eq: int
     nb_slash: int
     nb_www: int
-    ratio_digits_url: int
-    ratio_digits_host: int
+    ratio_digits_url: float
+    ratio_digits_host: float
     tld_in_subdomain: int
     prefix_suffix: int
     shortest_word_host: int
@@ -72,6 +72,8 @@ class FakeDetectionResponse(BaseModel):
     long_url: str
     ssl_cert: SSLCert
     features: URLFeatures
+    host_name: str
+    port: int
     ModelPrediction: str
 
 
