@@ -1,0 +1,9 @@
+fastapi[all]==0.104.0
+selenium==4.14.0
+pyOpenSSL==23.3.0
+SQLAlchemy==1.4.47
+python-whois==0.8.0
+databases==0.8.0
+tldextract==5.0.1
+pandas==2.1.2
+scikit-learn==1.2.2

@@ -1,0 +1,8 @@
+venv/*
+binaries/*
+.idea/*
+*.pyc
+*.ipynb
+.env
+users.sqlite
+log.txt
