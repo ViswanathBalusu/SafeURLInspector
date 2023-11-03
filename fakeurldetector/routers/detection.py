@@ -144,9 +144,6 @@ async def fake_detect(uuid_text: FakeDetectionIn):
 
     if _session[2] == "App":
         markup = quick_markup({f'Model Prediction 🤖: {"Legit Site✅" if _pred == 0 else "Fake❌"}': {'url': _original_url}})
-#         middle_text += f"""
-# <b>AI Model Prediction 🤖: </b><code>{"Legit Site" if _pred == 0 else "Fake"}</code>
-# """
         await _bot.edit_message_text(middle_text, chat_id=int(_session[4]), reply_markup=markup,message_id=_msg.id,
                                      parse_mode="HTML")
     _dict["ModelPrediction"] = "Legit Site" if _pred == 0 else "Fake"
