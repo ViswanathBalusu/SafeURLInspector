@@ -3,7 +3,7 @@ import socket
 from socket import gaierror
 import OpenSSL
 from datetime import datetime
-from ssl import SSLCertVerificationError
+from ssl import SSLCertVerificationError, SSLError
 
 
 def get_ssl_certificate(host, port=443, timeout=10) -> (bool, str):
@@ -20,6 +20,10 @@ def get_ssl_certificate(host, port=443, timeout=10) -> (bool, str):
         context.verify_mode = ssl.CERT_NONE
         flag = False
         err = str(e)
+    except SSLError as e:
+        flag = False
+        err = str(e)
+        gai_flag = True
     except gaierror as e:
         flag = False
         err = str(e)

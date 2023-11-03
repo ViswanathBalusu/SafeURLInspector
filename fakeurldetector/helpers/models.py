@@ -43,7 +43,7 @@ class UsersGetAll(BaseModel):
 class SSLCert(BaseModel):
     isSSLAvailable: bool
     SSLPullError: str
-    Certificate: Dict
+    Certificate: Optional[Dict]
 
 
 class URLFeatures(BaseModel):
