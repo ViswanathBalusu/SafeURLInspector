@@ -16,7 +16,7 @@ def get_requirements():
     return requirements_list
 
 
-README = Path("README.md").read_text()
+README = Path("Readme.md").read_text()
 
 setup(
     name='URLRakshak',
