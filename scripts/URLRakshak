@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-uvicorn --port 8080 --host 0.0.0.0 fakeurldetector.API:FakeURLDetection
+uvicorn --port "${PORT}" --host 0.0.0.0 fakeurldetector.API:FakeURLDetection

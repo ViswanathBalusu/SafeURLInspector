@@ -53,7 +53,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile
+          file: ./Dockerfile.build
           platforms: linux/amd64
           push: true
           tags: ${{ steps.metaraw.outputs.tags }}
