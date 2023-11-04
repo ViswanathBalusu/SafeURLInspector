@@ -20,8 +20,5 @@ logging.getLogger("pyrogram").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 LOGGER = logging.getLogger(__name__)
 
-if Config.OPEN_PAGE_RANK_API_KEY == -1 or Config.OPEN_PAGE_RANK_API_KEY is None:
-    LOGGER.error("Cant Start the Program Without the Open Page Rank API Key")
-    exit(1)
 
 DATABASE = Database(Config.DB_URL)

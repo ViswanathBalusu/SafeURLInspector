@@ -7,6 +7,8 @@ from fakeurldetector import DATABASE, __version__
 
 from .helpers.api_auth import verify_api_key
 from .routers import *
+from fakeurldetector import Config, LOGGER
+
 
 FakeURLDetection = FastAPI(
     title="Fake URL Detection",
@@ -20,6 +22,9 @@ FakeURLDetection = FastAPI(
 
 @FakeURLDetection.on_event("startup")
 async def database_dir_init():
+    if Config.OPEN_PAGE_RANK_API_KEY == -1 or Config.OPEN_PAGE_RANK_API_KEY is None:
+        LOGGER.error("Cant Start the Program Without the Open Page Rank API Key")
+        exit(1)
     await DATABASE.connect()
 
 
