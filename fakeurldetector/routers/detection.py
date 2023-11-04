@@ -46,7 +46,7 @@ async def fake_detect(uuid_text: FakeDetectionIn):
     if not check:
         LOGGER.info(f"Selenium Could not load the Site 😞'{uuid_text.text}'")
         _original_url = uuid_text.text
-    LOGGER.info(f"Selenium Could not load the Site 😞'{uuid_text.text}'")
+    LOGGER.info(f"Redirect Found : '{uuid_text.text}'")
     _dict["long_url"] = _original_url
     if _session[2] == "App":
         if check:

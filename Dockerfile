@@ -1,5 +1,11 @@
-FROM ubuntu:latest
+FROM python:3.11-slim
 
-LABEL authors="ckvbalusu"
+LABEL authors="Chandra Kiran Viswanath Balusu"
 
-ENTRYPOINT ["top", "-b"]
+WORKDIR /app
+
+RUN apt update && apt install -y chromium chromium-l10n curl
+
+RUN pip install -U pip && pip install urlrakshak
+
+CMD ["URLRakshak"]
