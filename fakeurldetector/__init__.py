@@ -4,7 +4,7 @@ from logging.handlers import RotatingFileHandler
 import logging
 
 from .BaseConfig import Config
-__version__ = "0.0.1"
+from .version import __version__
 
 # Logger
 logging.basicConfig(

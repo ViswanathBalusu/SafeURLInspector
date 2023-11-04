@@ -22,11 +22,11 @@ jobs:
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-      - name: Install deps fro Pypi Release
+      - name: Install deps for Pypi Release
         run: |
-          pip -q install setuptools wheel twine
+          pip -q install setuptools wheel
           pip -q install -r requirements.txt
-      - name: Build Artefacts
+      - name: Build Artifacts
         run: |
           python setup.py sdist bdist_wheel
       - name: Publish package distributions to PyPI

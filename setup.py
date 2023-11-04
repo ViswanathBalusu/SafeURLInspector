@@ -1,7 +1,9 @@
 from setuptools import find_packages, setup
 
 from pathlib import Path
-from fakeurldetector import __version__
+from fakeurldetector.version import __version__
+
+
 def get_requirements():
     requirements_list = []
 
