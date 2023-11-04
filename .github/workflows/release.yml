@@ -21,7 +21,7 @@ jobs:
           python-version: 3.11.6
       - name: Get the version
         id: get_version
-        run: echo echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
       - name: Install deps for Pypi Release
         run: |
           pip -q install setuptools wheel

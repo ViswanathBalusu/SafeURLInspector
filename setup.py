@@ -43,5 +43,5 @@ setup(
         "": ["data/model.pkl"],
     },
     python_requires=">=3.11",
-    scripts=['bin/URLRakshak'],
+    scripts=['scripts/URLRakshak'],
 )
